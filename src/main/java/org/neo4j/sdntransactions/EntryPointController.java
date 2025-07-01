@@ -3,6 +3,8 @@ package org.neo4j.sdntransactions;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
+
 /**
  * @author Gerrit Meier
  */
@@ -17,15 +19,22 @@ public class EntryPointController {
         this.serviceReadonly = serviceReadonly;
     }
 
-
     @GetMapping("/sdn")
     public String benchWithSDN() {
-        return service.returnNamesViaRepository();
+        long start = System.currentTimeMillis();
+        var names = service.returnNamesViaRepository();
+        long end = System.currentTimeMillis();
+        System.out.println("SDN readonly: " + Duration.ofMillis(end - start));
+        return String.join(",", names);
     }
 
     @GetMapping("/sdn/readonly")
     public String benchWithSDNReadOnly() {
-        return serviceReadonly.returnNamesViaRepository();
+        long start = System.currentTimeMillis();
+        var names = serviceReadonly.returnNamesViaRepository();
+        long end = System.currentTimeMillis();
+        System.out.println("SDN readonly: " + Duration.ofMillis(end - start));
+        return String.join(",", names);
     }
 
     @GetMapping("/driver")

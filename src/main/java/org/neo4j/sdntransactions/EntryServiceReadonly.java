@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author Gerrit Meier
@@ -27,13 +28,8 @@ public class EntryServiceReadonly {
     }
 
     @Transactional(readOnly = true)
-    public String returnNamesViaRepository() {
-        long start = System.currentTimeMillis();
-        var names = repository.getNames();
-        long end = System.currentTimeMillis();
-        System.out.println("SDN readonly: " + Duration.ofMillis(end - start));
-
-        return String.join(",", names);
+    public Collection<String> returnNamesViaRepository() {
+        return repository.getNames();
     }
 
     public String returnNamesViaDriver() {
