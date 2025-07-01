@@ -14,7 +14,6 @@ import java.util.ArrayList;
  * @author Gerrit Meier
  */
 @Service
-@Transactional(readOnly = true)
 public class EntryServiceReadonly {
 
     private final EntryRepositoryReadOnly repository;
@@ -27,6 +26,7 @@ public class EntryServiceReadonly {
         this.sessionConfig = SessionConfig.builder().withDatabase(databaseName).withDefaultAccessMode(AccessMode.READ).build();
     }
 
+    @Transactional(readOnly = true)
     public String returnNamesViaRepository() {
         long start = System.currentTimeMillis();
         var names = repository.getNames();
@@ -37,8 +37,8 @@ public class EntryServiceReadonly {
     }
 
     public String returnNamesViaDriver() {
+        long start = System.currentTimeMillis();
         try (var session = driver.session(sessionConfig)) {
-            long start = System.currentTimeMillis();
 
             var names = new ArrayList<String>();
             session.run("MATCH (e:Entry) RETURN e.name").forEachRemaining(record ->

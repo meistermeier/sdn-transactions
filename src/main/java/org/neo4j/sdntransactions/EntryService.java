@@ -13,7 +13,6 @@ import java.util.ArrayList;
  * @author Gerrit Meier
  */
 @Service
-@Transactional
 public class EntryService {
 
     private final EntryRepository repository;
@@ -26,6 +25,7 @@ public class EntryService {
         this.sessionConfig = SessionConfig.builder().withDatabase(databaseName).build();
     }
 
+    @Transactional
     public String returnNamesViaRepository() {
         long start = System.currentTimeMillis();
         var names = repository.getNames();
@@ -35,8 +35,8 @@ public class EntryService {
     }
 
     public String returnNamesViaDriver() {
+        long start = System.currentTimeMillis();
         try (var session = driver.session(sessionConfig)) {
-            long start = System.currentTimeMillis();
 
             var names = new ArrayList<String>();
             session.run("MATCH (e:Entry) RETURN e.name").forEachRemaining(record ->
